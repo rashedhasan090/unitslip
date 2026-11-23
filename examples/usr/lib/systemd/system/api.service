@@ -1,0 +1,11 @@
+[Unit]
+Description=Internal API (vendor copy)
+
+[Service]
+ExecStart=/usr/local/bin/api --port 8080
+User=api
+ProtectSystem=strict
+ProtectHome=yes
+NoNewPrivileges=yes
+PrivateDevices=yes
+SystemCallFilter=@system-service

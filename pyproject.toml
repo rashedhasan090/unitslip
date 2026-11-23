@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "unitslip"
+version = "0.1.0"
+description = "Find systemd service hardening that silently does not apply"
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.8"
+authors = [{ name = "Md Rashedul Hasan" }]
+keywords = ["systemd", "hardening", "security", "linux", "audit"]
+
+[project.scripts]
+unitslip = "unitslip:main"
+
+[tool.setuptools]
+packages = ["unitslip"]

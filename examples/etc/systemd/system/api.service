@@ -1,0 +1,12 @@
+[Unit]
+Description=Internal API (full copy made with systemctl edit --full)
+ProtectSystem=strict
+
+[Service]
+ExecStart=/usr/local/bin/api --port 8080
+ExecStartPre=+/usr/local/bin/api-migrate
+User=api
+NoNewPrivileges=ture
+ProtectHome=yes
+Environment="API_TOKEN=sk-live-redacted-demo" MODE=prod
+ReadWritePaths=-/var/lib/api /etc/systemd

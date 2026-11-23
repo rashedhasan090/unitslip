@@ -1,0 +1,27 @@
+unitslip 0.1.0: 2 unit(s), 10 finding(s) (9 high, 1 medium, 0 low, 0 info)
+
+api.service
+  effective hardening: none
+  HIGH   US014 api.service  this higher-priority copy fully replaces examples/usr/lib/systemd/system/api.service and drops its NoNewPrivileges=yes, PrivateDevices=yes, ProtectHome=yes, ProtectSystem=strict
+         fix: re-apply the vendor hardening in a drop-in instead of a full copy
+  HIGH   US001 api.service:3  ProtectSystem= is a [Service] directive but sits in [Unit], so it is ignored
+         fix: move it under [Service]
+  HIGH   US006 api.service:7  ExecStartPre has the '+' prefix, so this command runs with full privileges and none of the unit's sandboxing (User=, Protect*, filters) applies to it
+         fix: drop '+' or move the privileged step into a separate, audited unit
+  HIGH   US003 api.service:9  NoNewPrivileges=ture is not a valid value and is ignored
+         fix: valid values: yes or no
+  HIGH   US004 10-debug.conf:2  ProtectHome=yes at api.service:10 is weakened to no by this drop-in
+         fix: remove the override or justify it in a comment
+  HIGH   US012 20-harden.conf:2  PrivateDevices= sits outside any [Section] and is ignored
+         fix: add a [Service] header above it
+  HIGH   US013 30-caps.cnf  drop-in is never read because its name does not end in .conf, so its hardening CapabilityBoundingSet never applies
+         fix: rename it to 30-caps.conf
+  MEDIUM US008 api.service:11  Environment= sets API_TOKEN (21 chars) inline; unit files are world-readable and any user can read it with systemctl show
+         fix: use LoadCredential= or an EnvironmentFile= with mode 0600
+
+backup.service
+  effective hardening: PrivateTmp=yes
+  HIGH   US009 backup.service:2  ExecStart runs /tmp/backup.sh as root from /tmp, where a non-root user can plant or swap the binary
+         fix: install it under /usr/local/bin owned by root
+  HIGH   US016 backup.service:5  ProtectSystem= is in unknown section [Serivce] (did you mean [Service]?), which systemd skips entirely
+         fix: move it under [Service]
